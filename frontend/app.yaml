@@ -1,0 +1,29 @@
+runtime: nodejs20
+env: standard
+
+handlers:
+# Serve the main entry point
+- url: /(^$|index\.html)
+  static_files: index.html
+  upload: index.html
+
+# Ensure TypeScript files are served with the correct MIME type for browser execution
+- url: /(.*\.tsx)$
+  static_files: \1
+  upload: .*\.tsx$
+  mime_type: application/javascript
+
+- url: /(.*\.ts)$
+  static_files: \1
+  upload: .*\.ts$
+  mime_type: application/javascript
+
+# Serve all other static assets
+- url: /(.*)
+  static_files: \1
+  upload: (.*)
+
+# Catch-all for SPA routing
+- url: /.*
+  static_files: index.html
+  upload: index.html
