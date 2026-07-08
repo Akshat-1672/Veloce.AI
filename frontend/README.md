@@ -1,34 +1,29 @@
-# Veloce.AI - Google Cloud Deployment
+# Veloce.AI - Modular Architecture
 
-This project is fully configured for deployment on Google Cloud. Since I am an AI assistant, I cannot execute commands directly on your Google Cloud account. You will need to run one of the following commands in your **Google Cloud Shell** or local terminal (with the gcloud CLI installed).
+The project has been completely separated into `frontend` and `backend` directories, each with their own build configurations.
 
-## Option 1: Deploy to Google Cloud Run (Recommended)
-Cloud Run will build the Dockerfile and host the Nginx container automatically.
+## Running Locally (Docker Compose)
+The easiest way to run the full stack is using Docker Compose:
+```bash
+export API_KEY="your_gemini_api_key"
+docker-compose up --build
+```
+- Frontend will be available at `http://localhost:80`
+- Backend will be available at `http://localhost:8000`
 
-1. Open your terminal or Google Cloud Shell.
-2. Make the script executable:
-   ```bash
-   chmod +x deploy-cloudrun.sh
-   ```
-3. Execute the deployment script:
-   ```bash
-   ./deploy-cloudrun.sh
-   ```
-*(Alternatively, you can run: `gcloud run deploy veloce-ai-studio --source . --platform managed --region us-central1 --allow-unauthenticated --port 80`)*
+## Manual Deployment
 
-## Option 2: Deploy to Google App Engine
-App Engine will host the raw files as a highly scalable static website.
+### Backend
+1. Navigate to `backend/`
+2. Build: `docker build -t veloce-backend .`
+3. Run: `docker run -p 8000:8000 -e API_KEY="your_key" veloce-backend`
 
-1. Open your terminal or Google Cloud Shell.
-2. Make the script executable:
-   ```bash
-   chmod +x deploy-appengine.sh
-   ```
-3. Execute the deployment script:
-   ```bash
-   ./deploy-appengine.sh
-   ```
-*(Alternatively, you can run: `gcloud app deploy app.yaml --quiet`)*
+### Frontend
+1. Navigate to `frontend/`
+2. Build: `docker build -t veloce-frontend .`
+3. Run: `docker run -p 80:80 veloce-frontend`
 
 ---
-**Note on API Keys:** Ensure that your deployment environment is configured to inject the `API_KEY` environment variable so the Gemini SDK can authenticate successfully.
+
+## Note on Sandbox Environment
+To ensure the sandbox preview continues to work, the root directory contains wrapper files (`index.html`, `index.tsx`, `App.tsx`) that simply point to the `frontend/` directory. When deploying to production, you can safely extract the `frontend/` and `backend/` folders and deploy them independently.
